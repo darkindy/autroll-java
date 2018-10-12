@@ -1,2 +1,2 @@
-# autroll-java
-Automated Facebook trolling has never been easier
+# Autroll (Java version)
+Experimental automated Facebook trolling using Selenium and AI from Bot Libre
