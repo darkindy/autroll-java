@@ -1,6 +1,7 @@
 package ro.darkindy.autroll.task;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,12 +35,14 @@ public class TrollingTask {
 
     @Autowired
     private WebDriver webDriver;
+    private JavascriptExecutor javascriptExecutor;
 
     @Autowired
     private MessageProvider messageProvider;
 
     @PostConstruct
     public void init() {
+        javascriptExecutor = (JavascriptExecutor) webDriver;
         logInToFacebook();
         logger.info("Trolling initiated.");
     }
@@ -68,8 +71,8 @@ public class TrollingTask {
 
     private void postComment(WebElement postContainer, String commentText) throws InterruptedException {
         WebElement commentBox = postContainer.findElement(By.className("UFIAddCommentInput"));
-        commentBox.click();
-        Thread.sleep(1000);
+        javascriptExecutor.executeScript("arguments[0].click();", commentBox);
+        Thread.sleep(1500);
         WebElement currentElement = webDriver.switchTo().activeElement();
         currentElement.sendKeys(commentText);
         currentElement.sendKeys(Keys.RETURN);
@@ -82,7 +85,7 @@ public class TrollingTask {
 
     private List<WebElement> obtainPostContainers() throws InterruptedException {
         webDriver.get(fbTargetUrl);
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         return webDriver.findElements(By.className("userContentWrapper"));
     }
 
@@ -101,7 +104,7 @@ public class TrollingTask {
         element = webDriver.findElement(By.xpath("//*[@id=\"pass\"]"));
         element.sendKeys(fbSourcePass);
         element = webDriver.findElement(By.xpath("//input[@value=\"Log In\"]"));
-        element.click();
+        javascriptExecutor.executeScript("arguments[0].click();", element);
     }
 
 }
