@@ -64,6 +64,10 @@ public class TrollingTask {
         logger.info("Did not comment before. Continuing.");
 
         String postText = extractPostText(postContainer);
+        if(postText == null) {
+            logger.info("Post has no text. Exiting.");
+            return;
+        }
         String commentText = messageProvider.computeMessage(postText);
         postComment(postContainer, commentText);
         logger.info("Ended trolling iteration.");
@@ -79,8 +83,10 @@ public class TrollingTask {
     }
 
     private String extractPostText(WebElement postContainer) {
-        WebElement postElement = postContainer.findElement(By.cssSelector("p"));
-        return postElement.getText();
+        List<WebElement> postParagraphs = postContainer.findElements(By.cssSelector("p"));
+        return postParagraphs.stream().findFirst()
+                            .map(WebElement::getText)
+                            .orElse(null);
     }
 
     private List<WebElement> obtainPostContainers() throws InterruptedException {
